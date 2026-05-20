@@ -1,0 +1,14 @@
+name: miltech_dark
+root: /datasets/MilTech/dark
+
+train: images/train
+val: images/test
+
+num_classes: 4
+nc: 4
+
+names:
+  - APC
+  - Military Truck
+  - Person
+  - Tank

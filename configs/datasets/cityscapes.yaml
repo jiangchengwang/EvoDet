@@ -1,0 +1,6 @@
+name: cityscapes
+root: /datasets/Cityscapes
+train_images: images/train
+val_images: images/val
+nc: 8
+names: [person, car, train, rider, truck, motorcycle, bicycle, bus]

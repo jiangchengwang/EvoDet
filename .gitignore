@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+outputs/checkpoints/*
+outputs/logs/*
+outputs/metrics/*
+outputs/replay/*
+outputs/visualizations/*
+runs/
+*.pt
+*.pth
+*.cache

@@ -1,0 +1,7 @@
+name: foggy_cityscapes_beta02
+root: /datasets/FoggyCityscapes
+train_images: images/train
+val_images: images/val
+nc: 8
+names: [person, car, train, rider, truck, motorcycle, bicycle, bus]
+notes: Only beta=0.02 images should remain in train/val for ConfMix reproduction.

@@ -1,0 +1,51 @@
+experiment:
+  name: miltech_2p2_finetune
+  output_dir: ../outputs/miltech_2p2_finetune
+  seed: 0
+
+dataset:
+  name: miltech
+  root: /datasets/MilTech/natural
+  num_classes: 4
+  train: images/train
+  val: images/val
+  test: images/test
+  names:
+    - APC
+    - Military Truck
+    - Person
+    - Tank
+
+task:
+  type: class_incremental
+  scenario: 2p2
+  initial_classes: 2
+  increment: 2
+  class_order: natural
+
+model:
+  name: yolov8
+  variant: yolov8n
+#  pretrained: yolov8n.pt
+  num_classes: 4
+
+method:
+  name: finetune
+
+training:
+  epochs_per_task: 5
+  batch_size: 4
+  eval_batch_size: 4
+  workers: 0
+  device: cuda:0
+  img_size: 640
+  lr: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+
+evaluation:
+  conf_thres: 0.001
+  iou_thres: 0.7
+  max_det: 300
+  save_csv: true
+  print_results: true

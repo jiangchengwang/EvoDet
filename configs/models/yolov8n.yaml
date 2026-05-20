@@ -1,0 +1,4 @@
+name: yolov8n
+backend: ultralytics
+weights: yolov8n.pt
+nc: 80

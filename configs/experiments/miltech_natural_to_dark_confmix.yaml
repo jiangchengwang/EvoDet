@@ -1,0 +1,110 @@
+experiment:
+  name: miltech_natural_to_dark_confmix_yolov8n
+  output_dir: ../outputs/miltech_natural_to_dark_confmix_yolov8n
+  seed: 0
+
+dataset:
+  source: ../configs/datasets/miltech_natural.yaml
+  target: ../configs/datasets/miltech_dark.yaml
+
+source_pretrain:
+  name: miltech_natural_source_pretrain_yolov8n
+  output_dir: ../outputs/miltech_natural_source_pretrain_yolov8n
+  epochs: 5
+  pretrained: yolov8n-cls.pt
+  pretrained_type: detector
+
+model:
+  name: yolov8
+  variant: yolov8n
+  pretrained: yolov8n-cls.pt
+  pretrained_type: detector
+
+  num_classes: 4
+
+method:
+  name: confmix
+
+  # ConfMix loss weight
+  lambda_mix: 1.0
+
+  # target pseudo label threshold
+  pseudo_conf_thres: 0.25
+  pseudo_iou_thres: 0.5
+  max_det: 300
+
+  # gamma = gamma_max * sigmoid_ramp(progress)
+  gamma_max: 1.0
+
+  # mixed image 中 source 区域是否保留 source GT
+  use_source_gt_for_mix: true
+
+  # YOLOv8 DFL uncertainty 版本参数
+  # certainty = (1 - normalized_entropy) ** uncertainty_power
+  uncertainty_power: 1.0
+
+  # 可选：
+  # combined_conf: det_conf * bbox_certainty，推荐
+  # score: progressive score
+  # det_conf: 只用分类置信度
+  # certainty: 只用定位 certainty
+  region_score_key: combined_conf
+
+training:
+  epochs: 5
+
+  batch_size: 16
+  eval_batch_size: 16
+  workers: 8
+  pin_memory: true
+
+  device: cpu
+  img_size: 640
+  stride: 32
+  rect: false
+
+  optimizer: SGD
+  lr: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+
+  warmup_epochs: 3.0
+  warmup_momentum: 0.8
+  warmup_bias_lr: 0.1
+  min_lr_ratio: 0.01
+
+  grad_clip: 10.0
+  amp: true
+  augment: true
+
+augmentation:
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  shear: 0.0
+  perspective: 0.0
+
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+
+  flipud: 0.0
+  fliplr: 0.5
+
+  mosaic: 1.0
+  mixup: 0.0
+  cutmix: 0.0
+  copy_paste: 0.0
+  copy_paste_mode: flip
+
+  mask_ratio: 4
+  overlap_mask: true
+  bgr: 0.0
+
+evaluation:
+  eval_before_uda: true
+  conf_thres: 0.001
+  iou_thres: 0.7
+  max_det: 300
+  save_csv: true
+  print_results: true

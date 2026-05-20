@@ -1,0 +1,22 @@
+[project]
+name = "evodet"
+version = "0.1.0"
+description = "A modular framework for continual, adaptive, and transferable object detection."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "torch",
+    "numpy",
+    "pyyaml",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["clod_framework*"]

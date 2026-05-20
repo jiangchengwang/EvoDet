@@ -1,0 +1,15 @@
+name: miltech_natural
+root: /datasets/MilTech/natural
+
+train: images/train
+val: images/val
+test: images/test
+
+num_classes: 4
+nc: 4
+
+names:
+  - APC
+  - Military Truck
+  - Person
+  - Tank

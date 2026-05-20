@@ -1,0 +1,89 @@
+experiment:
+  name: cityscapes_to_foggy_confmix_yolov8
+  output_dir: outputs/cityscapes_to_foggy_confmix_yolov8
+  seed: 0
+
+model:
+  name: yolov8
+  variant: yolov8n
+  pretrained: yolov8n-cls.pt
+  pretrained_type: detector
+  num_classes: 8
+
+dataset:
+  source: configs/datasets/cityscapes.yaml
+  target: configs/datasets/foggy_cityscapes_beta02.yaml
+
+method:
+  name: confmix
+
+  lambda_mix: 1.0
+  pseudo_conf_thres: 0.25
+  pseudo_iou_thres: 0.5
+  max_det: 300
+
+  # gamma = gamma_max * sigmoid_ramp(progress)
+  gamma_max: 1.0
+
+  # 混合图中 source 区域是否使用 source GT
+  use_source_gt_for_mix: true
+
+  # DFL entropy certainty:
+  # certainty = (1 - normalized_entropy) ** uncertainty_power
+  uncertainty_power: 1.0
+
+  # 可选：
+  #   combined_conf: 原始 ConfMix 风格，det_conf * bbox_certainty
+  #   score: progressive pseudo score
+  #   det_conf: 只用检测置信度
+  #   certainty: 只用 bbox certainty
+  region_score_key: combined_conf
+
+training:
+  epochs: 50
+  batch_size: 2
+  eval_batch_size: 2
+  workers: 4
+  pin_memory: true
+  device: cuda:0
+  img_size: 640
+  stride: 32
+  rect: false
+
+  optimizer: SGD
+  lr: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+  warmup_epochs: 3.0
+  warmup_momentum: 0.8
+  warmup_bias_lr: 0.1
+  min_lr_ratio: 0.01
+  grad_clip: 10.0
+  amp: true
+  augment: true
+
+augmentation:
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  shear: 0.0
+  perspective: 0.0
+
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+
+  flipud: 0.0
+  fliplr: 0.5
+
+  mosaic: 1.0
+  mixup: 0.0
+  cutmix: 0.0
+  copy_paste: 0.0
+
+evaluation:
+  conf_thres: 0.001
+  iou_thres: 0.7
+  max_det: 300
+  save_csv: true
+  print_results: true

@@ -1,0 +1,46 @@
+experiment:
+  name: coco_40p10_finetune
+  output_dir: outputs/coco_40p10_finetune
+  seed: 0
+
+scenario:
+  type: class_incremental
+  num_classes: 80
+  scenario: 40p10
+
+dataset:
+  name: coco
+  root: /datasets/coco
+  num_classes: 80
+  train: images/train2017
+  val: images/val2017
+
+task:
+  type: class_incremental
+  scenario: 40p10
+  initial_classes: 40
+  increment: 10
+  class_order: natural
+
+model:
+  name: yolov8
+  variant: yolov8n
+  pretrained: null
+  num_classes: 80
+
+method:
+  name: finetune
+
+training:
+  epochs_per_task: 5
+  batch_size: 16
+  workers: 8
+  device: cuda:0
+  lr: 0.01
+  weight_decay: 0.0005
+
+evaluation:
+  conf_thres: 0.001
+  iou_thres: 0.7
+  max_det: 300
+  save_csv: true
