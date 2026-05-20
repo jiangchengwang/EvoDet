@@ -11,3 +11,6 @@ runs/
 *.pt
 *.pth
 *.cache
+.DS_Store
+.idea/
+.vscode/
