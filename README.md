@@ -1179,3 +1179,4 @@ python scripts/train_uda.py \
 - YOLOv8 ConfMix 的 uncertainty 来自 DFL entropy，而不是 YOLOv5 原始 variance head。
 - UDA 阶段 target train 默认不使用真实标签参与 loss，只用于生成伪标签。
 - 当前 evaluator 是 YOLO 风格 evaluator；如需严格 COCO API，需要额外接入 COCO JSON 和 `pycocotools.COCOeval`。
+=======
