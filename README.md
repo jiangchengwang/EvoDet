@@ -323,107 +323,12 @@ main()
 
 ---
 
-### 6.1 MilTech 2p2 YOLO-LwF+OCDM 配置示例
 
-`configs/experiments/miltech_2p2_yolo_lwf_ocdm.yaml`
-
-```yaml
-experiment:
-  name: miltech_2p2_yolo_lwf_ocdm
-  output_dir: outputs/miltech_2p2_yolo_lwf_ocdm
-  seed: 0
-
-dataset:
-  name: miltech_natural
-  root: /datasets/MilTech/natural
-  train: images/train
-  val: images/val
-  test: images/test
-
-  num_classes: 4
-  nc: 4
-
-  names:
-    - APC
-    - Military Truck
-    - Person
-    - Tank
-
-model:
-  name: yolov8
-  variant: yolov8n
-  pretrained: yolov8n.pt
-  pretrained_type: detector
-  num_classes: 4
-
-tasks:
-  initial_classes: 2
-  increment: 2
-  class_order: [0, 1, 2, 3]
-
-method:
-  name: yolo_lwf_ocdm
-
-  lwf_gain: 1.0
-  replay_mem_size: 200
-  pseudo_conf_thres: 0.5
-  pseudo_iou_thres: 0.7
-  batch_size_ocdm: 10000
-
-training:
-  epochs_per_task: 5
-  batch_size: 4
-  eval_batch_size: 4
-  workers: 4
-  pin_memory: true
-
-  device: cuda:0
-  img_size: 640
-
-  optimizer: SGD
-  lr: 0.01
-  momentum: 0.937
-  weight_decay: 0.0005
-  warmup_epochs: 3.0
-  warmup_momentum: 0.8
-  warmup_bias_lr: 0.1
-  min_lr_ratio: 0.01
-  grad_clip: 10.0
-  amp: true
-  augment: true
-
-augmentation:
-  mosaic: 1.0
-  mixup: 0.0
-  cutmix: 0.0
-  copy_paste: 0.0
-  degrees: 0.0
-  translate: 0.1
-  scale: 0.5
-  shear: 0.0
-  perspective: 0.0
-  hsv_h: 0.015
-  hsv_s: 0.7
-  hsv_v: 0.4
-  flipud: 0.0
-  fliplr: 0.5
-
-evaluation:
-  conf_thres: 0.001
-  iou_thres: 0.7
-  max_det: 300
-  save_csv: true
-  print_results: true
-```
-
----
-
-### 6.2 运行 MilTech 类增量
+### 6.1 运行 MilTech 类增量
 
 ```bash
 cd /workspace/EvoDet
 
-conda run -p /opt/conda/envs/yolov8 --no-capture-output \
 python scripts/train_incremental.py \
   --config configs/experiments/miltech_2p2_yolo_lwf_ocdm.yaml
 ```
@@ -431,29 +336,6 @@ python scripts/train_incremental.py \
 ---
 
 ### 6.3 COCO 40p10
-
-COCO 40p10 推荐使用 YOLOv8s 或 YOLOv8n 做对比实验。
-
-核心配置逻辑：
-
-```yaml
-dataset:
-  root: /datasets/coco
-  train: images/train2017
-  val: images/val2017
-  num_classes: 80
-
-model:
-  variant: yolov8s
-  pretrained: yolov8s.pt
-  pretrained_type: detector
-  num_classes: 80
-
-tasks:
-  initial_classes: 40
-  increment: 10
-  class_order: [0, 1, 2, ..., 79]
-```
 
 运行：
 
@@ -562,108 +444,9 @@ both  : 先 source pretrain，再自动加载 source best.pt 做 UDA
 
 ---
 
-### 7.1 MilTech natural → dark 配置
+### 7.1 MilTech natural → dark
 
 `configs/experiments/miltech_natural_to_dark_confmix_yolov8.yaml`
-
-```yaml
-experiment:
-  name: miltech_natural_to_dark_confmix_yolov8n
-  output_dir: outputs/miltech_natural_to_dark_confmix_yolov8n
-  seed: 0
-
-source_pretrain:
-  name: miltech_natural_source_pretrain_yolov8n
-  output_dir: outputs/miltech_natural_source_pretrain_yolov8n
-  epochs: 50
-  pretrained: yolov8n.pt
-  pretrained_type: detector
-
-model:
-  name: yolov8
-  variant: yolov8n
-  pretrained: yolov8n.pt
-  pretrained_type: detector
-  num_classes: 4
-
-dataset:
-  source: configs/datasets/miltech_natural.yaml
-  target: configs/datasets/miltech_dark.yaml
-
-method:
-  name: confmix
-
-  lambda_mix: 1.0
-  pseudo_conf_thres: 0.25
-  pseudo_iou_thres: 0.5
-  max_det: 300
-
-  gamma_max: 1.0
-  use_source_gt_for_mix: true
-
-  uncertainty_power: 1.0
-  region_score_key: combined_conf
-
-training:
-  epochs: 50
-  batch_size: 4
-  eval_batch_size: 4
-  workers: 4
-  pin_memory: true
-
-  device: cuda:0
-  img_size: 640
-  stride: 32
-  rect: false
-
-  optimizer: SGD
-  lr: 0.01
-  momentum: 0.937
-  weight_decay: 0.0005
-  nbs: 64
-  accumulate: 1
-
-  warmup_epochs: 3.0
-  warmup_momentum: 0.8
-  warmup_bias_lr: 0.1
-  min_lr_ratio: 0.01
-
-  grad_clip: 10.0
-  amp: true
-  augment: true
-
-augmentation:
-  degrees: 0.0
-  translate: 0.1
-  scale: 0.5
-  shear: 0.0
-  perspective: 0.0
-
-  hsv_h: 0.015
-  hsv_s: 0.7
-  hsv_v: 0.4
-
-  flipud: 0.0
-  fliplr: 0.5
-
-  mosaic: 1.0
-  mixup: 0.0
-  cutmix: 0.0
-  copy_paste: 0.0
-  copy_paste_mode: flip
-
-  mask_ratio: 4
-  overlap_mask: true
-  bgr: 0.0
-
-evaluation:
-  eval_before_uda: true
-  conf_thres: 0.001
-  iou_thres: 0.7
-  max_det: 300
-  save_csv: true
-  print_results: true
-```
 
 ---
 
@@ -672,7 +455,6 @@ evaluation:
 ```bash
 cd /workspace/EvoDet
 
-conda run -p /opt/conda/envs/yolov8 --no-capture-output \
 python scripts/train_uda.py \
   --config configs/experiments/miltech_natural_to_dark_confmix_yolov8.yaml \
   --stage both
