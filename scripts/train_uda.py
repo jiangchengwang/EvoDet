@@ -36,7 +36,7 @@ from clod_framework.engine.optim import build_yolov8_optimizer
 from clod_framework.losses.detection_loss import DetectionLoss
 from clod_framework.methods.confmix_yolov8 import ConfMixYOLOv8Method
 from clod_framework.models.builder import build_model
-
+from clod_framework.utils.yaml_utils import load_yaml
 
 # ---------------------------------------------------------------------
 # Basic utils
@@ -54,8 +54,7 @@ def load_config(path: str | Path) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Config not found: {path}")
 
-    with path.open("r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    return load_yaml(path)
 
 
 def set_seed(seed: int) -> None:

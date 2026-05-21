@@ -36,6 +36,7 @@ from clod_framework.models.builder import (  # noqa: E402
     get_model_num_classes,
     resolve_model_source_for_teacher,
 )
+from clod_framework.utils.yaml_utils import load_yaml
 
 
 @dataclass
@@ -214,8 +215,10 @@ def load_config(path: str | Path) -> dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Config not found: {path}")
 
-    with path.open("r", encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_yaml(path)
+
+    dataset_config = load_yaml(cfg["dataset"]["source"])
+    cfg['dataset'].update(dataset_config)
 
     if cfg is None:
         raise ValueError(f"Empty config: {path}")

@@ -13,15 +13,7 @@ from clod_framework.data.yolo_detection_dataset import (
     build_ultralytics_hyp,
     yolo_detection_collate,
 )
-
-
-def load_yaml(path: str | Path) -> dict[str, Any]:
-    path = Path(path)
-
-    with path.open("r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-
-    return data or {}
+from clod_framework.utils.yaml_utils import load_yaml
 
 
 def _resolve_project_path(path: str | Path) -> Path:
