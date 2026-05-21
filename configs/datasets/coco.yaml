@@ -1,7 +1,7 @@
 name: coco
 root: /datasets/coco
-train_images: images/train2017
-val_images: images/val2017
+train: images/train2017
+val: images/val2017
 nc: 80
 names:
   0: person
