@@ -351,8 +351,7 @@ class OfficialYOLODetectionDataset(YOLODataset):
         self.ni = len(self.labels)
         self.indices = range(self.ni)
 
-        if hasattr(self, "buffer"):
-            self.buffer = list(range(len(self.labels)))
+        self._reset_ultralytics_buffer_after_filter()
 
         if getattr(self, "rect", False):
             try:
@@ -369,6 +368,37 @@ class OfficialYOLODetectionDataset(YOLODataset):
                 f"class_filter={sorted(self.class_filter) if self.class_filter is not None else None}, "
                 f"include_empty={self.include_empty}"
             )
+
+    def _reset_ultralytics_buffer_after_filter(self) -> None:
+        """
+        Reset Ultralytics buffer after task-specific filtering.
+
+        This follows original YOLOv8 behavior:
+
+            self.buffer = []
+            self.max_buffer_length = min(self.ni, self.batch_size * 8, 1000)
+                                     if augment else 0
+
+        Important:
+            buffer is not a full candidate pool.
+            It is a recent-image sliding window maintained by load_image().
+        """
+
+        if not hasattr(self, "buffer"):
+            return
+
+        self.buffer = []
+
+        batch_size = int(getattr(self, "batch_size", 16) or 16)
+
+        if bool(getattr(self, "augment", False)):
+            self.max_buffer_length = min(
+                int(self.ni),
+                batch_size * 8,
+                1000,
+            )
+        else:
+            self.max_buffer_length = 0
 
     def enable_pseudo_label_mode(self):
         """
@@ -398,8 +428,11 @@ class OfficialYOLODetectionDataset(YOLODataset):
 
         self.augment = False
 
-        if hasattr(self, "labels") and hasattr(self, "buffer"):
-            self.buffer = list(range(len(self.labels)))
+        if hasattr(self, "buffer"):
+            self.buffer = []
+
+        if hasattr(self, "max_buffer_length"):
+            self.max_buffer_length = 0
 
         # Rebuild transforms in no-augmentation mode.
         try:

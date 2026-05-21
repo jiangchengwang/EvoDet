@@ -72,10 +72,9 @@ training:
 
   # original: epochs = 100 and epochs_per_task = 100
   epochs_per_task: 100
-
   workers: 8
   pin_memory: true
-  device: cuda:0
+  device: cuda:1
 
   # original: input_shape = [3, 640, 640]
   img_size: 640

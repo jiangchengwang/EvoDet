@@ -644,8 +644,11 @@ def collect_pseudo_candidates_from_dataset(
         if hasattr(dataset, "augment"):
             dataset.augment = False
 
-        if hasattr(dataset, "labels") and hasattr(dataset, "buffer"):
-            dataset.buffer = list(range(len(dataset.labels)))
+        if hasattr(dataset, "buffer"):
+            dataset.buffer = []
+
+        if hasattr(dataset, "max_buffer_length"):
+            dataset.max_buffer_length = 0
 
         if hasattr(dataset, "build_transforms"):
             try:
